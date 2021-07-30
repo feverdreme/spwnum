@@ -8,7 +8,7 @@ A tensor library for spwn
 - [ ] add dot product of tensors
 - [ ] add cross product of tensors
 - [ ] create `iterable` type
-- [ ] fix the function-import bug
+- [x] fix the function-import bug
 
 ## How to import it
 

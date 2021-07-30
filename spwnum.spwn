@@ -19,21 +19,25 @@ _create_tensor = (dims: @array, depth: @number = 0) {
     return ret_arr
 }
 
-@array::depth = (arr: @array) {
-    if arr[0].type == @number {
-        return 1
-    } else {
-        return 1 + @array::depth(arr[0])
+impl @array {
+    depth: (arr: @array) {
+        if arr[0].type == @number {
+            return 1
+        } else {
+            return 1 + @array::depth(arr[0])
+        }
     }
 }
 
-@array::shape = (self) {
-    // terminal case
-    if self[0].type == @number {
-        return [self.length]
-    }
+impl @array {
+    shape: (self) {
+        // terminal case
+        if self[0].type == @number {
+            return [self.length]
+        }
 
-    return [self.length] + self[0].shape()
+        return [self.length] + self[0].shape()
+    }
 }
 
 type @tensor
@@ -109,49 +113,51 @@ impl @tensor {
     }
 }
 
-@tensor::op_tensors = (op: @macro, elem1: @tensor | @array, elem2: @tensor | @array) {
-    // error checking
-    if elem1.type != elem2.type {
-        throw "ShapeMismatch: supplied tensors have different shapes"
-    }
-
-    let iter1 = elem1
-    let iter2 = elem2
-
-    if elem1.type == @tensor {
-        if elem1.shape != elem2.shape {
+impl @tensor {
+    op_tensors: (op: @macro, elem1: @tensor | @array, elem2: @tensor | @array) {
+        // error checking
+        if elem1.type != elem2.type {
             throw "ShapeMismatch: supplied tensors have different shapes"
         }
 
-        iter1 = elem1.matrix
-        iter2 = elem2.matrix
-    } else if elem1.type == @array {
-        $.print(elem1)
-        $.print(elem2)
-        if elem1.shape() != elem2.shape() {
-            throw "ShapeMismatch: supplied arrays have different shapes"
+        let iter1 = elem1
+        let iter2 = elem2
+
+        if elem1.type == @tensor {
+            if elem1.shape != elem2.shape {
+                throw "ShapeMismatch: supplied tensors have different shapes"
+            }
+
+            iter1 = elem1.matrix
+            iter2 = elem2.matrix
+        } else if elem1.type == @array {
+            $.print(elem1)
+            $.print(elem2)
+            if elem1.shape() != elem2.shape() {
+                throw "ShapeMismatch: supplied arrays have different shapes"
+            }
         }
+
+        let ret_arr = []
+
+        // do the thing
+        if iter1[0].type == @number {
+
+            for i in 0..iter1.length {
+                ret_arr.push(op(iter1[i], iter2[i]))
+            }
+
+        } else {
+
+            for i in 0..iter1.length {
+                ret_arr.push(
+                    @tensor::op_tensors(op, iter1[i], iter2[i])
+                )
+            }
+        }
+
+        return ret_arr
     }
-
-    let ret_arr = []
-
-    // do the thing
-    if iter1[0].type == @number {
-
-        for i in 0..iter1.length {
-            ret_arr.push(op(iter1[i], iter2[i]))
-        }
-
-    } else {
-
-        for i in 0..iter1.length {
-            ret_arr.push(
-                @tensor::op_tensors(op, iter1[i], iter2[i])
-            )
-        }
-    }
-
-    return ret_arr
 }
 
 return @tensor::new
