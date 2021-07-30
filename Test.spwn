@@ -1,0 +1,6 @@
+tensor = import "spwnum.spwn"
+
+t = tensor([2,3])
+$.print(t)
+
+// $.print([4].depth()) <- leads to an error
