@@ -1,0 +1,75 @@
+_create_tensor = () {}
+
+_create_tensor = (dims: @array, depth: @number = 0) {
+    let ret_arr = []
+    
+    if depth == dims.length - 1 {
+        for i in 0..dims[depth] {
+            ret_arr.push(0)
+        }
+
+    } else {
+        elem_arr = _create_tensor(dims, depth + 1)
+
+        for i in 0..dims[depth] {
+            ret_arr.push(elem_arr)
+        }
+    }
+
+    return ret_arr
+}
+
+impl @tensor {
+    new: (shape = null, arr = null) {
+        if shape == null && arr == null {
+            throw "ConstructorError: Must supply either shape or array value"
+        }
+
+        if shape != null && arr != null {
+            throw "ConstructorError: Must supply only either shape or array, not both"
+        }
+
+        if shape != null {
+            return {
+                type: @tensor,
+                matrix: _create_tensor(shape),
+                shape: shape,
+            }
+        }
+
+        // arr != null
+        else {
+            return {
+                type: @tensor,
+                matrix: arr,
+                shape: arr.shape()
+            }
+        }
+    },
+
+    map: (self, func: @macro, _depth: @number = 0, _elem: @array | @number = -1) {
+        elem = self.matrix if _elem == -1 else _elem
+
+        // if mapping an array use builtin
+        if self.shape.length == 1 {
+            return self.matrix.map(func)
+        }
+
+        // terminal case
+        if _depth == self.shape.length - 1 {
+            return elem.map(func)
+        }
+        
+        let ret_arr = []
+
+        for e in elem {
+            ret_arr.push(self.map(func, _depth + 1, e))
+        }
+
+        return ret_arr
+    },
+
+    fill: (self, val: @number) {
+        return @tensor::new(arr = self.map(x => val))
+    },
+}

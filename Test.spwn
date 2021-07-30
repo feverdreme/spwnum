@@ -1,6 +1,18 @@
 tensor = import "spwnum.spwn"
 
-t = tensor([2,3])
-$.print(t)
+// let x = 5
+// let y = 4
 
-// $.print([4].depth()) <- leads to an error
+// t1 = tensor([2, y, x, 2])
+// t2 = tensor([2, y, x, 2])
+// t2 = t2.fill(4)
+
+// $.print(t1 + t2)
+
+// $.print([4].shape()) 
+
+// t3 = t1 - t2
+
+// t4 = @tensor::op_tensors((a, b) => a * b, t3, t2)
+
+// $.print(t4)

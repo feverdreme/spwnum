@@ -1,0 +1,64 @@
+impl @tensor {
+    neg: (self) {
+        return @tensor::new(arr = self.map(x => -x))
+    },
+
+    // arithemetic
+    _plus_: (self, other: @tensor) {
+        return @tensor::new(arr = @tensor::op_tensors((a, b) => a + b, self, other))   
+    },
+    
+    _minus_: (self, other: @tensor | @number) {
+        return @tensor::new(arr = @tensor::op_tensors((a, b) => a - b, self, other))
+    },
+
+    // dot product
+    _times_: (self, other: @tensor) {
+        return @tensor::new(arr = @tensor::dot(self.matrix, other.matrix))
+    }
+}
+
+impl @tensor {
+    op_tensors: (op: @macro, elem1: @tensor | @array, elem2: @tensor | @array) {
+        // error checking
+        if elem1.type != elem2.type {
+            throw "ShapeMismatch: supplied tensors have different shapes"
+        }
+
+        let iter1 = elem1
+        let iter2 = elem2
+
+        if elem1.type == @tensor {
+            if elem1.shape != elem2.shape {
+                throw "ShapeMismatch: supplied tensors have different shapes"
+            }
+
+            iter1 = elem1.matrix
+            iter2 = elem2.matrix
+        } else if elem1.type == @array {
+            if elem1.shape() != elem2.shape() {
+                throw "ShapeMismatch: supplied arrays have different shapes"
+            }
+        }
+
+        let ret_arr = []
+
+        // do the thing
+        if iter1[0].type == @number {
+
+            for i in 0..iter1.length {
+                ret_arr.push(op(iter1[i], iter2[i]))
+            }
+
+        } else {
+
+            for i in 0..iter1.length {
+                ret_arr.push(
+                    @tensor::op_tensors(op, iter1[i], iter2[i])
+                )
+            }
+        }
+
+        return ret_arr
+    }
+}

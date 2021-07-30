@@ -1,0 +1,41 @@
+impl @tensor {
+    dot: (m1: @array | @number, m2: @array | @number, checked: @bool = false) {
+        // terminal case
+        if m1.type == @number && m2.type == @number {
+            return m1 * m2
+        }
+
+        m1_shape = m1.shape()
+        m2_shape = m2.shape()
+
+        // do a check for dot
+        if !checked {
+            if m1_shape[1] != m2_shape[0] {
+                throw "ShapeMismatch: Review your linear algebra"
+            }
+        }
+
+        if m1.type != m2.type {
+            throw "ShapeMismatch: Matrices have incorrect shape or type"
+        }
+
+        let ret_mat = @tensor::new(shape = [m1_shape[0], m2_shape[1]]).matrix
+
+        // matrix multiplication
+        let elem = 0
+
+        for r in 0..m1_shape[0] {
+            for c in 0..m2_shape[1] {
+                elem = 0
+
+                for i in 0..m1_shape[1] { // same as m2_shape[0]
+                    elem += @tensor::dot(m1[r][i], m2[i][c])
+                }
+
+                ret_mat[r][c] = elem
+            }
+        }
+
+        return ret_mat
+    }
+}
