@@ -1,0 +1,69 @@
+#[no_std]
+constants = import "constants.spwn"
+extract constants.obj_props
+
+extract import "util.spwn"
+
+impl @item {
+
+    add:
+    #[desc("Implementation of the pickup trigger") example("10i.add(5)")]
+    (self, #[desc("Amount to add")] amount: @number) {
+        $.add( trigger{
+            OBJ_ID: 1817,
+            COUNT: amount,
+            ITEM: self,
+        })
+    },
+
+    if_is:
+    #[desc("Implementation of the instant count trigger") example("
+10i.if_is(EQUAL_TO, 5, !{
+    BG.pulse(255, 0, 0, fade_out = 0.5)
+})
+    ")]
+    (
+        self,
+        #[desc("Comparison mode")] comparison: @comparison,
+        #[desc("Number to compare with")] other: @number,
+        #[desc("Target function if comparison is 'true'")] function: @trigger_function
+    ) {
+        $.add( trigger{
+            OBJ_ID: 1811,
+            TARGET: function,
+            COUNT: other,
+            ACTIVATE_GROUP: true,
+            COMPARISON: comparison.id,
+            ITEM: self,
+        })
+    },
+
+    count:
+    #[desc("Implementation of the count trigger (-> returns an event for when an item reaches a certain value)") example("
+on(10i.count(100), !{
+    BG.pulse(0, 255, 0, fade_out = 0.5) // will pulse each time item ID 10 becomes 100
+})
+    ")]
+    (
+        self,
+        #[desc("Number to check against")] number: @number = 0
+    ) {
+        -> return @event::{
+            on_triggered: (function) => $.add( trigger{
+                OBJ_ID: 1611,
+                TARGET: function,
+                COUNT: number,
+                ACTIVATE_GROUP: true,
+                ITEM: self,
+                COUNT_MULTI_ACTIVATE: true,
+
+            })
+        }
+
+    },
+    _range_: #[desc("Implementation of the range operator (`..`) for item IDs") example("
+for item in 1i..10i {
+    item.add(10)
+}
+    ")] create_range_macro(@item)
+}

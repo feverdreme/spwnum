@@ -1,4 +1,4 @@
-import "./arr_utils.spwn"
+import "../misc/arr_utils.spwn"
 
 impl @tensor {
     reevaluate_shape: (tensor: @tensor) {

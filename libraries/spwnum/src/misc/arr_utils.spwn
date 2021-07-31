@@ -9,13 +9,25 @@ impl @array {
 }
 
 impl @array {
+    concat: (arr1: @array, arr2: @array) {
+        let ret_arr = arr1
+
+        for i in arr2 {
+            ret_arr.push(i)
+        }
+
+        return ret_arr
+    }
+}
+
+impl @array {
     shape: (self) {
         // terminal case
         if self[0].type == @number {
             return [self.length]
         }
-
-        return [self.length] + self[0].shape()
+        
+        return @array::concat([self.length], self[0].shape())
     }
 }
 

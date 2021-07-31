@@ -1,0 +1,5 @@
+tensor = import "./src/tensor/lib.spwn"
+
+return {
+    tensor: tensor
+}

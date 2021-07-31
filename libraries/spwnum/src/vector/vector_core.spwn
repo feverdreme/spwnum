@@ -1,0 +1,5 @@
+impl @vector {
+    new: (arr: @array) {
+        
+    }
+}

@@ -1,0 +1,123 @@
+extract import spwnum
+extract import std
+extract $
+extract obj_props
+
+SCALE = 2
+
+// base verticies
+bv = [[-SCALE], [SCALE]]
+
+// create vertices
+let vertices = []
+
+for i in bv {
+    for j in bv {
+        for k in bv {
+            vertices.push(
+                tensor(arr = [i, j, k])
+            )
+        }
+    }
+}
+
+// rotation matrices
+sint = 0.087
+cost = 0.996
+
+let Rx = [
+    [1, 0, 0],
+    [0, cost, -sint],
+    [0, sint, cost]
+]
+
+let Ry = [
+    [cost, 0, sint],
+    [0, 1, 0],
+    [-sint, 0, cost]
+]
+
+let Rz = [
+    [cost, -sint, 0],
+    [sint, cost, 0],
+    [0, 0, 1]
+]
+
+Rx = tensor(arr = Rx)
+Ry = tensor(arr = Ry)
+Rz = tensor(arr = Rz)
+
+TRANSFORMATION = Rx * Ry
+
+vertices = vertices
+
+rotate = () {
+    vertices = vertices.map(x => TRANSFORMATION * x)
+}
+
+// objects
+let objects = []
+
+for i in 0..8 {
+    objects.push(obj {
+        OBJ_ID: 1117,
+        X: i * 10,
+        Y: i * 10
+    })
+}
+
+objects = @obj_set::new(objects = objects)
+objects.add()
+
+// rendering function
+Z_OFFSET = 5
+K = 60
+
+/*
+Math:
+K = z', where z' is a chosen constant
+
+(x', y') = (Kx/z, Ky/z)
+*/
+
+render = (){
+    rotate()
+
+    // offset the vectors
+
+    // get transformation
+    let x = 0
+    let y = 0
+    let z = 0
+
+    for i in 0..8 {
+        x = vertices[i].matrix[0][0]
+        y = vertices[i].matrix[1][0]
+        z = vertices[i].matrix[2][0] + Z_OFFSET
+
+        objects.objects[i].set(X, K * x / z)
+        objects.objects[i].set(Y, K * y / z)
+    }
+}
+
+// for i in 0..60 {
+//     rotate()
+
+//     // offset the vectors
+
+//     // get transformation
+//     let x = 0
+//     let y = 0
+//     let z = 0
+
+//     for i in 0..8 {
+//         x = vertices[i].matrix[0][0]
+//         y = vertices[i].matrix[1][0]
+//         z = vertices[i].matrix[2][0] + Z_OFFSET
+
+//         objects.objects[i].set(X, K * x / z)
+//         objects.objects[i].set(Y, K * y / z)
+//     }
+
+//     wait(0.2)
+// }
