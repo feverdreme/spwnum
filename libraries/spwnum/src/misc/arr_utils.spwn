@@ -39,7 +39,6 @@ impl @array {
 
 impl @array {
     to_tensor: (self) {
-        $.print(self)
         return @tensor::new(arr = self.copy())
     }
 }
