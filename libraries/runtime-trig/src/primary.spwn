@@ -1,0 +1,31 @@
+extract import "constants.spwn"
+
+// sinx = 4x(180-x) / (40500 - x(180 - x))
+// sinx = 16x(pi-x)/(5pi^2 -4x(pi-x))
+
+// docs: accepts the rad
+sin = (angle: @number) {
+    a = mod(new_angle)
+
+    ret = 16 * a * (PI - a) / (5 * PI * PI - 4 * a * (PI - a))
+
+    if a < 0 {
+        return -ret
+    } else {
+        return ret
+    }
+}
+
+cos = (angle: @number) {
+    return sin(HALFPI - angle)
+}
+
+tan = (angle: @number) {
+    return sin(angle) / cos(angle)
+}
+
+return {
+    sin: sin,
+    cos: cos,
+    tan: cos
+}

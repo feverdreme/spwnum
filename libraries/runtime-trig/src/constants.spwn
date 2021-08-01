@@ -1,0 +1,23 @@
+PI = 3.1415926535
+TAU = PI * 2
+HALFPI = PI / 2
+
+RAD2DEG = 180 / PI
+DEG2RAD = PI / 180
+
+mod = (a: @number, b: @number) {
+    if a >= 0 {
+        return a % b
+    } else {
+        return (a % b) + b
+    }
+}
+
+return {
+    PI: PI,
+    TAU, TAU,
+    HALFPI: HALFPI,
+    RAD2DEG: RAD2DEG,
+    DEG2RAD: RED2RAD,
+    mod: mod
+}

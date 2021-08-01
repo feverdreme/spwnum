@@ -1,0 +1,7 @@
+f = import "src/primary.spwn"
+c = import "src/constants.spwn"
+
+return {
+    ..f,
+    ..c
+}
