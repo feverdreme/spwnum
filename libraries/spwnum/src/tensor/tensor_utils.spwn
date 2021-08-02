@@ -13,6 +13,19 @@ impl @tensor {
 }
 
 impl @tensor {
+    reshape: (self, shape: @array) {
+        elem_count_1 = self.shape.reduce((accum, elem) => accum * elem)
+        elem_count_2 = shape.reduce((accum, elem) => accum * elem)
+
+        if elem_count_1 != elem_count_2 {
+            throw "\nShapes should contain same elements, shape " + @string(self.shape) + " has " + @string(elem_count_1) + " elements and shape " + @string(shape) + " has " + @string(elem_count_2) + " elements"
+        }
+
+        // ill just wait for slice sytnax
+    }
+}
+
+impl @tensor {
     display: (self, maxlensize: @number = -1) {
         numlength = (el: @string){
             if el[0] == '-' {

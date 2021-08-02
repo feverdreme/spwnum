@@ -1,5 +1,16 @@
-impl @vector {
-    new: (arr: @array) {
-        
+impl @tensor {
+    vector: (arr: @array) {
+        arr_shape = arr.shape()
+
+        if arr_shape.length == 2 && arr_shape[1] == 1 {
+            throw "DimensionError: Column-vectors must be n x 1 dimensional"
+        }
+
+        let col = []
+        for i in arr {
+            col.push([i])
+        }
+
+        return @tensor::new(arr = col)
     }
 }

@@ -1,0 +1,18 @@
+dot = (v1: @tensor, v2: @tensor) {
+    if (!v1.is_row()) || (!v2.is_row()) {
+        throw "Error: Vector-dot requires two row vectors"
+    }
+
+    if v1.shape[0] != v2.shape[0] {
+        throw "Shape Mismatch: Vectors are not same shape"
+    }
+
+    let ret_vec = v1
+    for i in v1.shape[0] {
+        ret_vec.matrix[i] *= v2[i]
+    }
+
+    return ret_vec
+}
+
+return dot

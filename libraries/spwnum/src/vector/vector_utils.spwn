@@ -1,0 +1,23 @@
+impl @tensor {
+    is_row: (self) {
+        arr_shape = self.shape
+
+        if self.rank() == 1 {
+            return true
+        }
+
+        return false
+    },
+    is_column: (self) {
+        arr_shape = self.shape
+
+        if arr_shape.length == 2 && arr_shape[1] == 1 {
+            return true
+        }
+
+        return false
+    },
+    is_vector: (self) {
+        return self.is_row() || self.is_column()
+    }
+}

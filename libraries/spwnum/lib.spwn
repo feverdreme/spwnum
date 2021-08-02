@@ -1,7 +1,9 @@
 tensor = import "./src/tensor/lib.spwn"
+vector = import "./src/vector/lib.spwn"
 
 import "./src/misc/string_utils.spwn"
 
 return {
-    tensor: tensor
+    tensor: tensor,
+    vector: vector
 }
