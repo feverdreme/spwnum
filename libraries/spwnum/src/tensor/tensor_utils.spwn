@@ -1,0 +1,56 @@
+import "../misc/arr_utils.spwn"
+
+impl @tensor {
+    reevaluate_shape: (tensor: @tensor) {
+        tensor.shape = tensor.matrix.shape()
+    }
+}
+
+impl @tensor {
+    rank: (self) {
+        return self.shape.length
+    }
+}
+
+impl @tensor {
+    display: (self, maxlensize: @number = -1) {
+        numlength = (el: @string){
+            if el[0] == '-' {
+                return el.length - 1
+            } else {
+                return el.length
+            }
+        }
+        // get max char length
+        let flattened = self.matrix.flatten().map(x => x as @string)
+        let maxlen = flattened.max(key = (el: @string) => el.length).length + 2 if maxlensize == -1 else maxlensize
+
+        let ret_str = '['
+
+        if self.rank() == 1 {
+            for i in self.matrix {
+                let istr = i as @string
+
+                if istr[0] == '-' {
+                    ret_str = $.substr(ret_str, 0, ret_str.length - 1)
+                }
+                ret_str += istr.r_pad(maxlen - numlength(istr))
+            }
+        } else {
+            for i in ..self.matrix.length {
+                if i != 0 {
+                    ret_str += ' '
+                }
+                ret_str += @tensor::new(arr = self.matrix[i]).display(maxlen)
+
+                if i != self.matrix.length - 1 {
+                    ret_str += '\n'
+                }
+            }
+        }
+
+        ret_str += ']'
+
+        return ret_str
+    }
+}

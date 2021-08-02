@@ -1,9 +1,16 @@
 type @tensor
 
+// tensor stuff
 import "./tensor_core.spwn"
 import "./tensor_dot.spwn"
 import "../misc/arr_utils.spwn"
 import "./tensor_math.spwn"
-import "./tensor_background.spwn"
+import "./tensor_utils.spwn"
 
-return @tensor::new
+// graphics
+graphics = import "./graphics/lib.spwn"
+
+return {
+    tensor: @tensor::new,
+    graphics: graphics
+}
