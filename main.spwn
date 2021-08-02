@@ -1,7 +1,9 @@
-extract import spwnum
+spwnum = import spwnum
 extract import std
 extract $
 extract obj_props
+
+tensor = spwnum.tensor.tensor
 
 SCALE = 2
 
@@ -49,9 +51,9 @@ Rz = tensor(arr = Rz)
 
 TRANSFORMATION = Rx
 
-rotate = () {
-    vertices = vertices.map(x => TRANSFORMATION * x)
-}
+// rotate = () {
+//     vertices = vertices.map(x => TRANSFORMATION * x)
+// }
 
 // rendering function
 Z_OFFSET = 5
@@ -83,18 +85,18 @@ render_vertices = () {
 
 let past_coords = render_vertices()
 
-// objects
-block_groups = [1g, 2g, 3g, 4g, 5g, 6g, 7g, 8g]
-FOLLOW_PLAYER_GROUP = 9g
+// // objects
+// block_groups = [1g, 2g, 3g, 4g, 5g, 6g, 7g, 8g]
+// FOLLOW_PLAYER_GROUP = 9g
 
-for i in 0..8 {
-    add(obj {
-        OBJ_ID: 1117,
-        X: past_coords[i].matrix[0][0],
-        Y: past_coords[i].matrix[1][0],
-        GROUPS: [block_groups[i], 9g],
-    })
-}
+// for i in 0..8 {
+//     add(obj {
+//         OBJ_ID: 1117,
+//         X: past_coords[i].matrix[0][0],
+//         Y: past_coords[i].matrix[1][0],
+//         GROUPS: [block_groups[i], 9g],
+//     })
+// }
 
 // let move_tensors = []
 

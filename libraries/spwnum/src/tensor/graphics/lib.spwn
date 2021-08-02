@@ -1,0 +1,13 @@
+let d2 = import "./2d/lib.spwn"
+let d3 = import "./3d/lib.spwn"
+
+graphics = (rank: @number) {
+    return [
+        null,
+        null,
+        d2,
+        d3
+    ][rank]
+}
+
+return graphics

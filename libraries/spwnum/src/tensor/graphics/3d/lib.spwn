@@ -1,0 +1,28 @@
+import "../../tensor_core.spwn"
+extract $
+
+return {
+    rx: (theta: @number) {
+        return [
+            [1, 0, 0],
+            [0, cos(theta), -sin(theta)],
+            [0, sin(theta), cos(theta)]
+        ]
+    },
+
+    ry: (theta: @number) {
+        return [
+            [cos(theta), 0, sin(theta)],
+            [0, 1, 0],
+            [-sin(theta), 0, cos(theta)]
+        ]
+    },
+
+    rz: (theta: @number) {
+        return [
+            [cos(theta), -sin(theta), 0],
+            [sin(theta), cos(theta), 0],
+            [0, 0, 1]
+        ]
+    }
+}

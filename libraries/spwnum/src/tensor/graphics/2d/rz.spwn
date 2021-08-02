@@ -1,0 +1,12 @@
+import "../../tensor_core.spwn"
+
+from_angle = (sin_t: @number, cos_t: @number) {
+    return [
+        [cos_t, -sin_t],
+        [sin_t, cos_t]
+    ]
+}
+
+return {
+    from_angle: from_angle
+}
