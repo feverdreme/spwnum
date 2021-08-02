@@ -1,0 +1,11 @@
+impl @string {
+    _times_: (self, amount: @number) {
+        let ret = ""
+
+        for i in ..amount {
+            ret += self
+        }
+
+        return ret
+    }
+}
