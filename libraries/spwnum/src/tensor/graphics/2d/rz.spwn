@@ -1,10 +1,10 @@
 import "../../tensor_core.spwn"
 
 from_angle = (sin_t: @number, cos_t: @number) {
-    return [
+    return @tensor::new(arr = [
         [cos_t, -sin_t],
         [sin_t, cos_t]
-    ]
+    ])
 }
 
 return {

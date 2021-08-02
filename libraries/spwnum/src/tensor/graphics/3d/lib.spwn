@@ -3,26 +3,26 @@ extract $
 
 return {
     rx: (theta: @number) {
-        return [
+        return @tensor::new(arr = [
             [1, 0, 0],
             [0, cos(theta), -sin(theta)],
             [0, sin(theta), cos(theta)]
-        ]
+        ])
     },
 
     ry: (theta: @number) {
-        return [
+        return @tensor::new(arr = [
             [cos(theta), 0, sin(theta)],
             [0, 1, 0],
             [-sin(theta), 0, cos(theta)]
-        ]
+        ])
     },
 
     rz: (theta: @number) {
-        return [
+        return @tensor::new(arr = [
             [cos(theta), -sin(theta), 0],
             [sin(theta), cos(theta), 0],
             [0, 0, 1]
-        ]
+        ])
     }
 }
