@@ -19,7 +19,7 @@ impl @tensor {
             throw "ShapeMismatch: Matrices have incorrect shape or type"
         }
 
-        let ret_mat = @tensor::new(shape = [m1_shape[0], m2_shape[1]]).matrix
+        let ret_mat = @array::from_shape([m1_shape[0], m2_shape[1]])
 
         // matrix multiplication
         let elem = 0
