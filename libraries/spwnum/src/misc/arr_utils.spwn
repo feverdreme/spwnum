@@ -42,3 +42,24 @@ impl @array {
         return @tensor::new(arr = self.copy())
     }
 }
+
+impl @array {
+    from_shape: (shape: [@number], depth: @number = 0) {
+        let ret_arr = []
+    
+        if depth == shape.length - 1 {
+            for i in 0..shape[depth] {
+                ret_arr.push(0)
+            }
+
+        } else {
+            elem_arr = @array::from_shape(shape, depth + 1)
+
+            for i in 0..shape[depth] {
+                ret_arr.push(elem_arr)
+            }
+        }
+
+        return ret_arr
+    }  
+}

@@ -1,24 +1,3 @@
-_create_tensor = () {}
-
-_create_tensor = (dims: @array, depth: @number = 0) {
-    let ret_arr = []
-    
-    if depth == dims.length - 1 {
-        for i in 0..dims[depth] {
-            ret_arr.push(0)
-        }
-
-    } else {
-        elem_arr = _create_tensor(dims, depth + 1)
-
-        for i in 0..dims[depth] {
-            ret_arr.push(elem_arr)
-        }
-    }
-
-    return ret_arr
-}
-
 impl @tensor {
     new: (shape = null, arr = null) {
         if shape == null && arr == null {
@@ -32,7 +11,7 @@ impl @tensor {
         if shape != null {
             return {
                 type: @tensor,
-                matrix: _create_tensor(shape),
+                matrix: @array::from_shape(shape),
                 shape: shape,
             }
         }
