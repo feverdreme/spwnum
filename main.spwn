@@ -4,11 +4,12 @@ extract $
 extract obj_props
 
 tensor = spwnum.tensor.tensor
+vector = spwnum.vector.vector
 
 SCALE = 2
 
 // base verticies
-bv = [[-SCALE], [SCALE]]
+bv = [-SCALE, SCALE]
 
 // create vertices
 let vertices = []
@@ -17,47 +18,19 @@ for i in bv {
     for j in bv {
         for k in bv {
             vertices.push(
-                tensor(arr = [i, j, k])
+                vector([i, j, k])
             )
         }
     }
 }
 
 // rotation matrices
-sint = sin(5 * 3.14 / 180)
-cost = cos(5 * 3.14 / 180)
 
-let Rx = [
-    [1, 0, 0],
-    [0, cost, -sint],
-    [0, sint, cost]
-]
-
-let Ry = [
-    [cost, 0, sint],
-    [0, 1, 0],
-    [-sint, 0, cost]
-]
-
-let Rz = [
-    [cost, -sint, 0],
-    [sint, cost, 0],
-    [0, 0, 1]
-]
-
-Rx = tensor(arr = Rx)
-Ry = tensor(arr = Ry)
-Rz = tensor(arr = Rz)
-
-TRANSFORMATION = Rx
-
-// rotate = () {
-//     vertices = vertices.map(x => TRANSFORMATION * x)
-// }
+// TRANSFORMATION = spwnum.tensor.graphics(rank = 3).rx(5) * spwnum.tensor.graphics(rank = 3).ry(5)
 
 // rendering function
-Z_OFFSET = 5
-K = 40
+Z_OFFSET = 10
+K = 160
 
 /*
 Math:
@@ -66,82 +39,55 @@ K = z', where z' is a chosen constant
 (x', y') = (Kx/z, Ky/z)
 */
 
-render_vertices = () {
+render_vertices = (theta: @number) {
+    transform = spwnum.tensor.graphics(rank = 3).ry(theta) * spwnum.tensor.graphics(rank = 3).rx(theta)
     let ret_arr = []
     
     for i in 0..8 {
-        x = vertices[i].matrix[0][0]
-        y = vertices[i].matrix[1][0]
-        z = vertices[i].matrix[2][0] + Z_OFFSET
+        new_v = transform * vertices[i]
 
-        x_p = K * x / z 
+        x = new_v.matrix[0][0]
+        y = new_v.matrix[1][0]
+        z = new_v.matrix[2][0] + Z_OFFSET
+
+        x_p = K * x / z
         y_p = K * y / z
 
-        ret_arr.push(tensor(arr = [[x_p], [y_p]]))
+        ret_arr.push([x_p, y_p])
     }
 
     return ret_arr
 }
 
-let past_coords = render_vertices()
+projection_v = render_vertices(0)
 
 // // objects
-// block_groups = [1g, 2g, 3g, 4g, 5g, 6g, 7g, 8g]
+block_groups = [1g, 2g, 3g, 4g, 5g, 6g, 7g, 8g]
 // FOLLOW_PLAYER_GROUP = 9g
 
-// for i in 0..8 {
-//     add(obj {
-//         OBJ_ID: 1117,
-//         X: past_coords[i].matrix[0][0],
-//         Y: past_coords[i].matrix[1][0],
-//         GROUPS: [block_groups[i], 9g],
-//     })
-// }
+for i in 0..8 {
+    add(obj {
+        OBJ_ID: 1117,
+        X: projection_v[i][0],
+        Y: projection_v[i][1],
+        GROUPS: [block_groups[i], 9g],
+    })
+}
 
-// let move_tensors = []
+for theta in 20..20..200 {
+    let v_n = render_vertices(theta * 3.14 / 180)
+    let v_n_1 = render_vertices((theta - 20) * 3.14 / 180)
+    
+    for i in ..8 {
+        let dx = v_n[i][0] - v_n_1[i][0]
+        let dy = v_n[i][1] - v_n_1[i][1]
+        dx /= 3
+        dy /= 3
 
-// for i in 0..30 {
-//     rotate()
+        ->block_groups[i].move(dx, dy, 2)
+    }
 
-//     let move_tensor = []
+    print("Rendered frame: " + (theta / 20) as @string + " / 9" + " at time: " + time() as @string)
 
-//     let x = 0
-//     let y = 0
-//     let z = 0
-
-//     for i in 0..8 {
-//         x = vertices[i].matrix[0][0]
-//         y = vertices[i].matrix[1][0]
-//         z = vertices[i].matrix[2][0] + Z_OFFSET
-
-//         // create the projected vector
-//         let new_vec = tensor(arr = [[x], [y]])
-//         new_vec = new_vec.map(e => e * K / z).to_tensor()
-
-//         // get diff
-//         diff_vec = new_vec - past_coords[i]
-
-//         x = diff_vec.matrix[0][0]
-//         y = diff_vec.matrix[1][0]
-
-//         // store into past_coords
-//         past_coords[i] = new_vec
-
-//         move_tensor.push([x, y])
-//     }
-
-//     move_tensors.push(move_tensor)
-
-//     // wait(0.2)
-// }
-
-// // duration = 50
-// // -> FOLLOW_PLAYER_GROUP.move(100 * duration, 0, duration)
-
-// for move_tensor in move_tensors {
-//     for i in 0..8 {
-//         -> block_groups[i].move(move_tensor[i][0], move_tensor[i][1], 0.1)
-//     }
-
-//     wait(0.1)
-// }
+    wait(2)
+}
