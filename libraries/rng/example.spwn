@@ -1,0 +1,41 @@
+rng = import "random.spwn"
+
+// Generates a random integer between 0 and 2^32 - 1
+random_int = rng.randomInt()
+
+// Generates a random integer within a specified range
+random_int_in_range = rng.randomIntInRange(-100, -10)
+
+// Generates a random float between 0 and 1
+random_decimal = rng.randomFloat()
+
+// Generates a random float within a specified range
+random_decimal_in_range = rng.randomFloatInRange(-100, -10)
+
+// If you want you can set the rng to some seed
+// Keep in mind that this seed determines
+// The sequence of random numbers generated
+// So two rngs with the same seed
+// Produce the same numbers
+rng.seed(81264)
+
+// Generates a random integer between 0 and 2^32 - 1 using a seed
+seeded_random_int = rng.randomInt()
+
+// Generates a random integer within a specified range using a seed
+seeded_random_int_in_range = rng.randomIntInRange(-100, -10)
+
+// Generates a random float between 0 and 1 using a seed
+seeded_random_decimal = rng.randomFloat()
+
+// Generates a random float within a specified range using a seed
+seeded_random_decimal_in_range = rng.randomFloatInRange(-100, -10)
+
+$.print(random_int)
+$.print(random_int_in_range)
+$.print(random_decimal)
+$.print(random_decimal_in_range)
+$.print(seeded_random_int)
+$.print(seeded_random_int_in_range)
+$.print(seeded_random_decimal)
+$.print(seeded_random_decimal_in_range)
