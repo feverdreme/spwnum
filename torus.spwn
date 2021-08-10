@@ -1,0 +1,38 @@
+extract $
+spwnum = import spwnum
+vector = spwnum.vector.vector
+
+SCALE = 2
+CIRCLE_DENSITY = 20
+DEG_STEP_SIZE = 360 / 20
+
+let main_circle = []
+
+for theta in ..DEG_STEP_SIZE..360 {
+    let v = [cos(theta * 3.14 / 180), sin(theta * 3.14 / 180), 0]
+    v = v.map(c => SCALE * c)
+
+    v[0] += SCALE
+    v[1] += SCALE
+
+    main_circle.push(vector(v))
+}
+
+let vertices = []
+
+Z_DENSITY = 20
+Z_STEP_SIZE = 360 / Z_DENSITY
+
+for theta in Z_STEP_SIZE..Z_STEP_SIZE..360 {
+    transform = spwnum.tensor.graphics(rank = 3).ry(theta * 3.14 / 180)
+    
+    for v in main_circle {
+        vertices.push(transform * v)
+    }
+}
+
+model = main_circle + vertices 
+
+print("Vertices: " + model.length as @string)
+return model
+
