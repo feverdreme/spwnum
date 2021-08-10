@@ -1,0 +1,67 @@
+// #[no_level]
+spwnum = import spwnum
+vector = spwnum.vector.vector
+
+// build a cube
+SCALE = 2
+
+// base verticies
+bv = [-SCALE, SCALE]
+
+// create vertices
+let vertices = []
+
+for i in bv {
+    for j in bv {
+        for k in bv {
+            vertices.push(
+                [i, j, k]
+            )
+        }
+    }
+}
+
+EDGE_DENSITY = 4
+let edges = []
+
+// build the edges
+for i in ..8 {
+    for j in ..8 {
+        if i == j {
+            continue
+        }
+
+        v1 = vertices[i]
+        v2 = vertices[j]
+
+        // make sure they arnet diagonals
+        // check to make sure only one of the pairs differs by sign
+        let num_sign_diff = 0
+        let ptr_sign_diff = -1
+
+        for k in ..3 {
+            if v1[k] * v2[k] < 0 {
+                num_sign_diff += 1
+                ptr_sign_diff = k
+            }
+        }
+
+        if num_sign_diff != 1 {
+            continue
+        }
+
+        // create the vertices on lines
+        let stepsize = (v2[ptr_sign_diff] - v1[ptr_sign_diff]) / EDGE_DENSITY
+
+        for step in 1..EDGE_DENSITY {
+            let currmut = v1 
+            currmut[ptr_sign_diff] += step * stepsize
+
+            edges.push(currmut)
+        }
+    }
+}
+
+$.print("Rendered Cube")
+// $.print(vertices.length + edges.length)
+return (vertices + edges).map(x => vector(x))
