@@ -2,35 +2,16 @@ spwnum = import spwnum
 extract import std
 extract $
 extract obj_props
+model = import "torus.spwn"
 
 tensor = spwnum.tensor.tensor
 vector = spwnum.vector.vector
 
-SCALE = 2
-
-// base verticies
-bv = [-SCALE, SCALE]
-
-// create vertices
-let vertices = []
-
-for i in bv {
-    for j in bv {
-        for k in bv {
-            vertices.push(
-                vector([i, j, k])
-            )
-        }
-    }
-}
-
-// rotation matrices
-
-// TRANSFORMATION = spwnum.tensor.graphics(rank = 3).rx(5) * spwnum.tensor.graphics(rank = 3).ry(5)
+mlen = model.length
 
 // rendering function
 Z_OFFSET = 10
-K = 160
+K = 450
 
 /*
 Math:
@@ -43,8 +24,8 @@ render_vertices = (theta: @number) {
     transform = spwnum.tensor.graphics(rank = 3).ry(theta) * spwnum.tensor.graphics(rank = 3).rx(theta)
     let ret_arr = []
     
-    for i in 0..8 {
-        new_v = transform * vertices[i]
+    for i in 0..mlen {
+        new_v = transform * model[i]
 
         x = new_v.matrix[0][0]
         y = new_v.matrix[1][0]
@@ -62,10 +43,12 @@ render_vertices = (theta: @number) {
 projection_v = render_vertices(0)
 
 // // objects
-block_groups = [1g, 2g, 3g, 4g, 5g, 6g, 7g, 8g]
-// FOLLOW_PLAYER_GROUP = 9g
+let block_groups = []
+for i in ..mlen {
+    block_groups.push(?g)
+}
 
-for i in 0..8 {
+for i in ..mlen {
     add(obj {
         OBJ_ID: 1117,
         X: projection_v[i][0],
@@ -74,11 +57,11 @@ for i in 0..8 {
     })
 }
 
-for theta in 20..20..200 {
+for theta in 20..20..380 {
     let v_n = render_vertices(theta * 3.14 / 180)
     let v_n_1 = render_vertices((theta - 20) * 3.14 / 180)
     
-    for i in ..8 {
+    for i in ..mlen {
         let dx = v_n[i][0] - v_n_1[i][0]
         let dy = v_n[i][1] - v_n_1[i][1]
         dx /= 3
@@ -87,7 +70,7 @@ for theta in 20..20..200 {
         ->block_groups[i].move(dx, dy, 2)
     }
 
-    print("Rendered frame: " + (theta / 20) as @string + " / 9" + " at time: " + time() as @string)
+    print("Rendered frame: " + (theta / 20) as @string + " / 18" + " at time: " + time() as @string)
 
     wait(2)
 }
